@@ -12,24 +12,27 @@ go:- write("Введите имя файла: "),
 
 %***********************************************
 
-change_file(Filename,ListLength,String):- check_exist(Filename),
-                                          atom_string(A,Filename),
+change_file(Filename,ListLength,String):- atom_string(A,Filename),
                                          tell(A),
                                          write_all(ListLength,String),
-                                         told.
+                                         told,
+                                         write('Данные записаны в файл').
 
-write_all([HL|TL],[HS|TS]):- not(HL == -1),
-                             add_tab(HL,HS),
+write_all([-1],_):- !.
+write_all([HL|TL],[HS|TS]):- add_tab(HL,HS),
                              write_all(TL,TS).
 
 add_tab(-1,_):- !.
 add_tab(Length,String):- Length > 40,
                     sub_string(String,0,40,(Length-40),String),
-                    writeln(String).
+                    write(String),
+                    write('\n').
 
 add_tab(Length,String):- Ltub is (40-Length)//2,
-                         tab(Ltub), writeln(String).
-                         
+                         tab(Ltub),
+                         write(String),
+                         write('\n').
+
 %***********************************************
 
 read_file(Filename,ListLengh,String):- check_exist(Filename),
@@ -53,9 +56,20 @@ read_all_lines(F,[HL|TL], [HS|TS]):- num_lines(F,N,L),
                           not(N == -1),
                          HL is N,
                          atom_string(HS,L),
-                         read_all_lines(F,TL,TS).
+                         read_all_lines(F,TL,TS),!.
 read_all_lines(_,[-1],_):- !.
 
 
-                         
+
+write_to_file:- read(X),
+                tell('find_me.txt'),
+                write_s(X),
+                told,
+                write('Данные записаны в файл').
+
+write_s('#'):-!.
+write_s(X):- write(X),
+             read(Y),
+             write_s(Y).
+
 
