@@ -63,11 +63,15 @@ proccess(3):- nl,writeln("Удаление записей."),nl,
               remove_record(Name),
               nl,writeln("Хотите удалить еще что-то? (y - да; n - нет): "),
               read(Answ),nl,
-              check_answer(Answ),!
+              check_answer(Answ),!.
 
-remove_record(Name):- findall((N,C),toy(Name,C),ListT),
+remove_record(Name):- findall((_,C),toy(Name,C),ListT),
+                      write_elem(ListT).
 
-                      retract(toy(Name,_)).
+write_elem([]):- nl,wreteln("Sorry, but I can't to find it :("),nl.
+write_elem([(N,C)|[]]):- retract(toy(N,C)).
+write_elem([(N,C)|T]):- retract(toy(N,C)),
+                        write_elem(T),!.
 
 %...............................................................................
 
