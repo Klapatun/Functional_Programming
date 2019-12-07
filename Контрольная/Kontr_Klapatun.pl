@@ -50,7 +50,7 @@ proccess(2):- nl,writeln("Добавление элемента:"),
               check_answer(Answ),!.
 
 check_answer(y):- fail.
-check_answer(n):- write("Записи добавлены"),nl.
+check_answer(n):- write("Готово"),nl.
 
 
 %...............................................................................
@@ -61,6 +61,8 @@ proccess(3):- nl,writeln("Удаление записей."),nl,
               writeln("Введите название игрушки: "),
               read(Name),
               remove_record(Name),
+              findall((Name,Cost), toy(Name,Cost), ToysList),
+              write_bd(ToysList),
               nl,writeln("Хотите удалить еще что-то? (y - да; n - нет): "),
               read(Answ),nl,
               check_answer(Answ),!.
@@ -68,13 +70,27 @@ proccess(3):- nl,writeln("Удаление записей."),nl,
 remove_record(Name):- findall((_,C),toy(Name,C),ListT),
                       write_elem(ListT).
 
-write_elem([]):- nl,wreteln("Sorry, but I can't to find it :("),nl.
+write_elem([]):- nl,writeln("Sorry, but I can't to find it"),nl.
 write_elem([(N,C)|[]]):- retract(toy(N,C)).
 write_elem([(N,C)|T]):- retract(toy(N,C)),
                         write_elem(T),!.
 
 %...............................................................................
+%Наиболее дорогие игрушки
 
-%proccess(4,BD_open):- BD_open == 1.
+proccess(4):- nl,writeln("Наиболее дорогие игрушки:"),nl,
+              most_expensive_toy(Name, R),
+              .
 
 
+most_expensive_toy(Name, R):- findall((N,C), toy(N,C), ToysList),
+                           find_most_expensive(ToysList, R).
+                           
+                           
+find_most_expensive(ToysList, R, Tmp):- [R1|_] is ToysList,
+                                        .
+
+                           
+                           
+                           
+                           
