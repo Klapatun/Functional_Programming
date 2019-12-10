@@ -26,8 +26,8 @@ proccess(5).
 %...............................................................................
 
 proccess(1):- write("Введите имя базы данных: "),
-                      read(NameBD),
-                      consult(NameBD),
+                      %read(NameBD),
+                      consult("BD_Toys.txt"),
                       findall((Name,Cost), toy(Name,Cost), ToysList),
                       write_bd(ToysList).
 
@@ -79,18 +79,26 @@ write_elem([(N,C)|T]):- retract(toy(N,C)),
 %Наиболее дорогие игрушки
 
 proccess(4):- nl,writeln("Наиболее дорогие игрушки:"),nl,
-              most_expensive_toy(Name, R),
-              .
+              most_expensive_toy(ToysList),
+              nl,writeln("Хотите удалить еще что-то? (y - да; n - нет): "),
+              read(Answ),nl,
+              check_answer(Answ),!.
+
+most_expensive_toy(ToysList):- findall(C, toy(_,C), ToysListN),
+                               msort(ToysListN, ToysListN2),
+                               reverse(ToysListN2,ToysListN3),
+                               nth0(0,ToysListN3,Max),
+                               condition(ToysListN3, Max, _, _, ToysList),
+                               write_bd(ToysList).
+                                          
+                                          
+condition([], ToysList, _, ToysList):- !.
+condition([H|T], Max, ToysListBefore, ToysListAfter, ToysList):- (Max-100)=< H,
+                                  findall((Name,H), toy(Name,H), TmpList),
+                                  append(ToysListBefore, TmpList, ToysListAfter),
+                                  condition(T, Max, ToysListAfter, _, ToysList).
+condition([_|T], _,ToysList,_,ToysList):- !.
+
+                                        
 
 
-most_expensive_toy(Name, R):- findall((N,C), toy(N,C), ToysList),
-                           find_most_expensive(ToysList, R).
-                           
-                           
-find_most_expensive(ToysList, R, Tmp):- [R1|_] is ToysList,
-                                        .
-
-                           
-                           
-                           
-                           
