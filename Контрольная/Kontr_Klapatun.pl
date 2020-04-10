@@ -44,7 +44,7 @@ proccess(3):- nl,writeln("Удаление записей."),nl,
               read(Name),
               writeln("Введите стоимость удаляемой игрушки: "),
               read(Cost),
-              remove_record(Name),
+              remove_record(Name,Cost),
               findall((Name,Cost), toy(Name,Cost), ToysList),
               write_bd(ToysList),
               nl,writeln("Хотите удалить еще что-то? (y - да; n - нет): "),
@@ -78,7 +78,7 @@ check_answer(n):- write("Готово"),nl.
 %3
 %Delete
 
-remove_record(Name, Cost):- findall((_,_),toy(Name,Cost),ListT),
+remove_record(Name, Cost):- findall((Name,Cost),toy(Name,Cost),ListT),
                       write_elem(ListT).
 
 write_elem([]):- nl,writeln("Sorry, but I can't to find it"),nl.
@@ -98,13 +98,27 @@ most_expensive_toy:- findall(C, toy(_,C), ToysListN),
                                write_bd(ToysList),nl.
 
 
-condition([], ToysList, _, ToysList):- !.
-condition([H|T], Max, ToysListBefore, ToysListAfter, ToysList):- (Max-100)=< H,
+condition([],_, ToysList, _, ToysList):- !.
+condition([H|T], Max, ToysListBefore, ToysListAfter, ToysList):- (Max-1000)=< H,
                                                                  findall((Name,H), toy(Name,H), TmpList),
                                                                  append(ToysListBefore, TmpList, ToysListAfter),
                                                                  condition(T, Max, ToysListAfter, _, ToysList),!.
+condition([H|[H|T]], Max, ToysListBefore, _, ToysList):- condition(T, Max, ToysListBefore, _, ToysList),!.
 condition([_|_], _,ToysList,_,ToysList):- !.
 
+
+remove_excess([H|[H1|T]]):- H==H1,
+
+
+func([H|[L|_]]):-
+    H\=L,
+    write(H),
+    func(L)
+    .
+func([_|L]):-
+    func(L).
+func([H]):-
+    write(H),!.
 
 
 %...............................................................................
