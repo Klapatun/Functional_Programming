@@ -93,8 +93,9 @@ write_elem([(N,C)|T]):- retract(toy(N,C)),
 most_expensive_toy:- findall(C, toy(_,C), ToysListN),
                                msort(ToysListN, ToysListN2),
                                reverse(ToysListN2,ToysListN3),
-                               nth0(0,ToysListN3,Max),
-                               condition(ToysListN3, Max, _, _, ToysList),
+                               remove_excess(ToysListN3, ToysListN4),
+                               nth0(0,ToysListN4,Max),
+                               condition(ToysListN4, Max, _, _, ToysList),
                                write_bd(ToysList),nl.
 
 
@@ -107,18 +108,16 @@ condition([H|[H|T]], Max, ToysListBefore, _, ToysList):- condition(T, Max, ToysL
 condition([_|_], _,ToysList,_,ToysList):- !.
 
 
-remove_excess([H|[H1|T]]):- H==H1,
 
 
-func([H|[L|_]]):-
-    H\=L,
-    write(H),
-    func(L)
-    .
-func([_|L]):-
-    func(L).
-func([H]):-
-    write(H),!.
+remove_excess([],_):-!.
+remove_excess([H|[L|T]], ListNew):- H\=L,
+                                    remove_excess(T,ListNew1),
+                                    append([H,L],ListNew1, ListNew),
+                                    !.
+remove_excess([H|[_|T]],ListNew):- remove_excess(T,ListNew1),
+                                   append([H],ListNew1, ListNew),
+                                   !.
 
 
 %...............................................................................
