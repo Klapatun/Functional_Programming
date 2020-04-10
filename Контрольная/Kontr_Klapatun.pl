@@ -40,8 +40,10 @@ proccess(2):- nl,writeln("Добавление элемента:"),
 
 proccess(3):- nl,writeln("Удаление записей."),nl,
               repeat,
-              writeln("Введите название игрушки: "),
+              writeln("Введите название удаляемой игрушки: "),
               read(Name),
+              writeln("Введите стоимость удаляемой игрушки: "),
+              read(Cost),
               remove_record(Name),
               findall((Name,Cost), toy(Name,Cost), ToysList),
               write_bd(ToysList),
@@ -76,7 +78,7 @@ check_answer(n):- write("Готово"),nl.
 %3
 %Delete
 
-remove_record(Name):- findall((_,C),toy(Name,C),ListT),
+remove_record(Name, Cost):- findall((_,_),toy(Name,Cost),ListT),
                       write_elem(ListT).
 
 write_elem([]):- nl,writeln("Sorry, but I can't to find it"),nl.
